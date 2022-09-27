@@ -3,13 +3,14 @@
   import { formatDate } from "./HelperFunc/time";
   import { Label, Input, Select, Button, Helper } from "flowbite-svelte";
   import { validateTask } from "./HelperFunc/validation";
-  import { addTask } from "./HelperFunc/databseQuerys";
+  import { updateTask } from "./HelperFunc/databseQuerys";
 
   // Sets MinTime in form to todays date.
   let minTime = formatDate(new Date());
 
   export let taskToUpdate;
   let taskInformation = {
+    id: taskToUpdate.id,
     description: taskToUpdate.description,
     startTime: minTime,
     deadline: taskToUpdate.deadline,
@@ -39,7 +40,7 @@
       (value) => value === false
     );
     if (validated) {
-      addTask(taskInformation);
+      updateTask(taskInformation);
       taskInformation = {
         description: null,
         startTime: minTime,
@@ -142,6 +143,7 @@
       >
     {/if}
   </div>
+  
 
   <!-- Button for submit -->
   <div class="mt-6 col-span-2 ">

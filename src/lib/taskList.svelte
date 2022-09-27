@@ -19,7 +19,7 @@
     db.tasks
       .where("description")
       .startsWithIgnoreCase(searchTerm)
-      .and((item) => item.status !== "completed")
+      .and((item) => item.status !== "Completed")
       .sortBy("deadline")
   );
 
@@ -38,7 +38,6 @@
 </script>
 
 <!-- Loop entries from database into table -->
-
 <TableSearch
   placeholder="Search by description"
   color="purple"

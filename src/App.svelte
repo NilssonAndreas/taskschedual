@@ -5,7 +5,7 @@
   import TimelineCalendar from "./lib/timelineCalendar.svelte";
   import SpecificTaskCard from "./lib/specificTaskCard.svelte";
   import UpdateTask from "./lib/updateTask.svelte";
-  import { Drawer, Button, CloseButton } from "flowbite-svelte";
+  import { Drawer, Button } from "flowbite-svelte";
   import { sineIn } from "svelte/easing";
   let hideTaskForm = true;
   let hideSpecificTaskCard = true;
@@ -29,6 +29,7 @@
     Add task</Button
   >
   <Button outline color="dark">schedule</Button>
+  <Button outline color="dark">Archive</Button>
   <Button outline color="dark">Import tasks</Button>
   <Button outline color="dark">Export tasks</Button>
 </div>
@@ -65,11 +66,6 @@
     bind:uppdateTaskForm={showUpdateForm}
     bind:hideSpecificTaskCard
   />
-
-  <CloseButton
-    on:click={() => (hideSpecificTaskCard = true)}
-    class="mb-4 dark:text-white"
-  />
 </Drawer>
 
 <!-- Drawer for update Task form -->
@@ -81,9 +77,4 @@
   id="sidebar7"
 >
   <UpdateTask taskToUpdate={task} />
-
-  <CloseButton
-    on:click={() => (showUpdateForm = true)}
-    class="mb-4 dark:text-white"
-  />
 </Drawer>

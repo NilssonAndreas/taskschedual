@@ -1,4 +1,5 @@
 <script>
+  import { completeTask } from "./HelperFunc/databseQuerys";
   import {
     Table,
     TableBody,
@@ -8,43 +9,110 @@
     TableHeadCell,
     Card,
     Button,
+    Modal,
+    Label,
+    Input,
+    Popover,
   } from "flowbite-svelte";
   export let task;
   export let uppdateTaskForm;
   export let hideSpecificTaskCard;
+  let isConfirmed = false;
+  let formModal = false;
+  let actualDurationModal = 0;
+  let validationErrorOnComplete = false
 
+  function completeTaskIfConfirmed(id) {
+
+    if(actualDurationModal > 0){
+      validationErrorOnComplete = false
+      completeTask(id, actualDurationModal);
+      hideSpecificTaskCard = true;
+    } else{
+      validationErrorOnComplete = true
+    }
+    
+  }
 </script>
 
 <!-- Drop down Drawer from edeting task status -->
-<div class=" flex justify-center ">
-<Card size="xl">
- 
-  <h5
-    class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center"
-  >
-    {task.description}
-  </h5>
-  <Table>
-    <TableHead>
-      <TableHeadCell>Start time</TableHeadCell>
-      <TableHeadCell>Deadline</TableHeadCell>
-      <TableHeadCell>Estimated duraion (Hours)</TableHeadCell>
-      <TableHeadCell>Elapsed time</TableHeadCell>
-      <TableHeadCell>Status</TableHeadCell>
-    </TableHead>
-    <TableBody class="divide-y">
-      <TableBodyRow trClass="">
-        <TableBodyCell>{task.startingtime}</TableBodyCell>
-        <TableBodyCell>{task.deadline}</TableBodyCell>
-        <TableBodyCell> {task.estimatedduration}</TableBodyCell>
-        <TableBodyCell>PLACEHOLDER</TableBodyCell>
-        <TableBodyCell>{task.status}</TableBodyCell>
-      </TableBodyRow>
-    </TableBody>
-  </Table>
-
-</Card>
+<div class=" flex justify-center mb-5">
+  <Card size="xl">
+    <h5
+      class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center"
+    >
+      {task.description}
+    </h5>
+    <Table>
+      <TableHead>
+        <TableHeadCell>Start time</TableHeadCell>
+        <TableHeadCell>Deadline</TableHeadCell>
+        <TableHeadCell>Estimated duraion (Hours)</TableHeadCell>
+        <TableHeadCell>Elapsed time</TableHeadCell>
+        <TableHeadCell>Status</TableHeadCell>
+      </TableHead>
+      <TableBody class="divide-y">
+        <TableBodyRow trClass="">
+          <TableBodyCell>{task.startingtime}</TableBodyCell>
+          <TableBodyCell>{task.deadline}</TableBodyCell>
+          <TableBodyCell>{task.estimatedduration}</TableBodyCell>
+          <TableBodyCell>PLACEHOLDER</TableBodyCell>
+          <TableBodyCell>{task.status}</TableBodyCell>
+        </TableBodyRow>
+      </TableBody>
+    </Table>
+  </Card>
 </div>
-<Button color= "yellow" on:click={() => ( hideSpecificTaskCard = true, uppdateTaskForm = false )}> Edit</Button>
-<Button color= "green" on:click={() => ( hideSpecificTaskCard = true )}> Complete</Button>
-<Button color= "red" on:click={() => ( hideSpecificTaskCard = true )}> Delete</Button>
+
+<!-- Button for edeting task -->
+<Button
+  color="yellow"
+  on:click={() => ((hideSpecificTaskCard = true), (uppdateTaskForm = false))}
+>
+  Edit
+</Button>
+
+<!-- Button for Complete -->
+<Button color="green" on:click={() => (formModal = true)}>Complete</Button>
+
+<!-- Button for Delete -->
+<Button
+  color="red"
+  on:click={() => (
+    (isConfirmed = confirm("Do you want to Delete this task?"))
+  )}
+  >Delete
+</Button>
+<Button color="blue" >Add progress</Button>
+
+<!-- Popup for confirming complete task -->
+<Modal bind:open={formModal} size="xs" autoclose={false} placement="bottom-center">
+  <form class="flex flex-col space-y-6">
+    <h3 class="text-xl font-medium text-gray-900 dark:text-white p-0">
+      How long did the task take?
+    </h3>
+    <Label class="space-y-2">
+      <span>Actual Duration(Hours)</span>
+
+      {#if validationErrorOnComplete}
+       <Input type="number" color="red" placeholder="Enter duration" bind:value={actualDurationModal} id="number"/>
+       <Popover class="text-sm" triggeredBy="#number" placement="left">
+        <div class="text-left">
+        <li>Must be a number</li>
+        <li>Value must be over 0</li>
+        </div>
+       </Popover>
+      {:else} 
+      <Input type="number" bind:value={actualDurationModal} placeholder="Enter duration" required min="0" />
+      {/if}
+
+      
+    </Label>
+    <div>
+      <Button color="green" on:click={() => completeTaskIfConfirmed(task.id)}
+        >Complete</Button
+      >
+      <Button color="red" on:click={() => (formModal = false)}>Cancel</Button>
+    </div>
+  </form>
+</Modal>

@@ -26,17 +26,31 @@ export async function addTask(taskInformation) {
  * @param  {array} task
  */
 export async function updateTask(task) {
-    db.tasks.update(task.id, {
-      desciption: task.desciption,
-      deadline: task.deadline,
-      startingtime: task.startingtime,
-      categories: task.categories,
-      estimatedduration: task.estimatedduration,
-      actualduration: task.actualduration
-    }).then(function (updated) {
-      if (updated)
-        console.log(task.id, "updated");
-      else
-        console.log("Nothing was updated");
-    });
-  }
+    try {
+        await db.tasks.update(task.id, {
+            description: task.description,
+            category: task.selected,
+            startingtime: task.startTime,
+            deadline: task.deadline,
+            estimatedduration: task.estimatedDuration
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+/**
+ * Sets status to complete for specific task
+ * @async
+ * @param  {number} id
+ * @param  {number} duration
+ */
+export async function completeTask(id, duration) {
+    try {
+        await db.tasks.update(id, { status: "Completed", actualduration: duration })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
