@@ -1,4 +1,4 @@
-<!-- Adds task into db -->
+<!-- Update task information -->
 <script>
   import { formatDate } from "./HelperFunc/time";
   import { Label, Input, Select, Button, Helper } from "flowbite-svelte";
@@ -8,13 +8,14 @@
   // Sets MinTime in form to todays date.
   let minTime = formatDate(new Date());
 
+  export let taskToUpdate;
   let taskInformation = {
-    description: null,
+    description: taskToUpdate.description,
     startTime: minTime,
-    deadline: null,
-    estimatedDuration: null,
-    selected: null,
-    taskStatus: "Not started",
+    deadline: taskToUpdate.deadline,
+    estimatedDuration: taskToUpdate.estimatedDuration,
+    selected: taskToUpdate.category,
+    taskStatus: taskToUpdate.taskStatus,
   };
 
   // CURRENT CATEGORYS ( SHOULD LATER BE ADDED AS TABLE IN DB )
@@ -50,14 +51,15 @@
     }
   }
 </script>
-
+<h5 class="underline font-bold mb-5">EDIT TASK</h5>
 <div class="grid grid-cols-2 gap-4">
+  
   <!-- Description -->
   <div class="mb-6">
     <Label for="description" class="block mb-2">Description</Label>
     <Input
       id="description"
-      placeholder="Enter description"
+      placeholder={taskToUpdate.description}
       bind:value={taskInformation.description}
     />
     {#if validationErrors["description"]}
@@ -91,6 +93,7 @@
       <Input
         id="StartTime"
         type="date"
+        placeholder={taskInformation.startTime}
         min={minTime}
         bind:value={taskInformation.startTime}
       />
@@ -104,9 +107,10 @@
   <!-- Deadline -->
   <div class="mt-6">
     <Label
-      >Select deadline
+      >Select Deadline
       <Input
         id="deadline"
+        placeholder={taskToUpdate.deadline}
         type="date"
         min={taskInformation.startTime}
         bind:value={taskInformation.deadline}
@@ -121,12 +125,13 @@
 
   <!-- Estimated duration -->
   <div class="mt-6 col-span-2">
+ 
     <Label for="Estimated Duration" class="block mb-2"
       >Estimated duration (hours)</Label
     >
     <Input
       id="Estimated Duration"
-      placeholder="0"
+      placeholder={taskToUpdate.estimatedduration}
       type="number"
       min="0"
       bind:value={taskInformation.estimatedDuration}
@@ -141,7 +146,7 @@
   <!-- Button for submit -->
   <div class="mt-6 col-span-2 ">
     <Button gradient color="purple" size="xl" on:click={() => validateMyTask()}
-      >Add task
+      >Edit Task 
     </Button>
   </div>
 </div>

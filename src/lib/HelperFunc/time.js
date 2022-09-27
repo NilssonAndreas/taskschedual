@@ -12,7 +12,11 @@ export function dateDiffInDays(dateA, dateB) {
   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 }
 
-// Get todays date as yyyy-mm-dd
+
+/**
+ * Get Todays date as yyyy-mm-dd
+ * @param  {Date} date
+ */
 export function formatDate(date) {
     var d = new Date(date),
         month = '' + (d.getMonth() + 1),
