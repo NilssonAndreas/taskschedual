@@ -7,16 +7,17 @@
 
   // Sets MinTime in form to todays date.
   let minTime = formatDate(new Date());
-
+  export let uppdateTaskForm = false;
   export let taskToUpdate;
   let taskInformation = {
     id: taskToUpdate.id,
     description: taskToUpdate.description,
     startTime: minTime,
     deadline: taskToUpdate.deadline,
-    estimatedDuration: taskToUpdate.estimatedDuration,
+    estimatedDuration: taskToUpdate.estimatedduration,
     selected: taskToUpdate.category,
     taskStatus: taskToUpdate.taskStatus,
+    elapsedTime: taskToUpdate.elapsedtime,
   };
 
   // CURRENT CATEGORYS ( SHOULD LATER BE ADDED AS TABLE IN DB )
@@ -48,13 +49,15 @@
         estimatedDuration: null,
         selected: null,
         taskStatus: "Not started",
+        elapsedTime: null,
       };
+      uppdateTaskForm = true;
     }
   }
 </script>
+
 <h5 class="underline font-bold mb-5">EDIT TASK</h5>
 <div class="grid grid-cols-2 gap-4">
-  
   <!-- Description -->
   <div class="mb-6">
     <Label for="description" class="block mb-2">Description</Label>
@@ -88,7 +91,7 @@
   </div>
 
   <!-- Starting Time -->
-  <div class="mt-6">
+  <div class="mb-6">
     <Label
       >Select Start time
       <Input
@@ -106,7 +109,7 @@
     {/if}
   </div>
   <!-- Deadline -->
-  <div class="mt-6">
+  <div class="mb-6">
     <Label
       >Select Deadline
       <Input
@@ -125,14 +128,13 @@
   </div>
 
   <!-- Estimated duration -->
-  <div class="mt-6 col-span-2">
- 
+  <div class="mb-6 col-span-2">
     <Label for="Estimated Duration" class="block mb-2"
-      >Estimated duration (hours)</Label
+      >Estimated duration (Hours)</Label
     >
     <Input
       id="Estimated Duration"
-      placeholder={taskToUpdate.estimatedduration}
+      placeholder={taskToUpdate.estimatedDuration}
       type="number"
       min="0"
       bind:value={taskInformation.estimatedDuration}
@@ -143,12 +145,28 @@
       >
     {/if}
   </div>
-  
+
+  <!-- Elapsed Time -->
+  <div class="mb-6 col-span-2">
+    <Label for="Elapsed time" class="block mb-2">Elapsed time (Hours)</Label>
+    <Input
+      id="Elapsed time"
+      placeholder={taskInformation.elapsedTime}
+      type="number"
+      min="0"
+      bind:value={taskInformation.elapsedTime}
+    />
+    {#if validationErrors["elapsedTime"]}
+      <Helper class="mt-1" color="red"
+        ><span class="font-bold text-sm">Error!</span> Enter a Elapsed time</Helper
+      >
+    {/if}
+  </div>
 
   <!-- Button for submit -->
   <div class="mt-6 col-span-2 ">
     <Button gradient color="purple" size="xl" on:click={() => validateMyTask()}
-      >Edit Task 
+      >Edit Task
     </Button>
   </div>
 </div>

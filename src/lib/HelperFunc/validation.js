@@ -9,8 +9,9 @@ export function validateTask(taskInformation) {
         deadline: false,
         estimatedDuration: false,
         selected: false,
-      };
-   
+        elapsedTime: false,
+    };
+
     if (taskInformation.description == null || taskInformation.description == "") {
         validationErrors.description = true
     }
@@ -30,5 +31,11 @@ export function validateTask(taskInformation) {
     if (taskInformation.estimatedDuration <= 0) {
         validationErrors.estimatedDuration = true
     }
+
+    if (taskInformation.elapsedTime < 0) {
+        validationErrors.elapsedTime = true
+
+    }
+
     return validationErrors;
 }

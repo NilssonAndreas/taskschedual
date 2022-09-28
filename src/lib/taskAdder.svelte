@@ -15,6 +15,7 @@
     estimatedDuration: null,
     selected: null,
     taskStatus: "Not started",
+    elapsedTime: 0,
   };
 
   // CURRENT CATEGORYS ( SHOULD LATER BE ADDED AS TABLE IN DB )
@@ -46,6 +47,7 @@
         estimatedDuration: null,
         selected: null,
         taskStatus: "Not started",
+        elapsedTime: 0,
       };
     }
   }

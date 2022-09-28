@@ -23,6 +23,7 @@
     "vite": "^3.1.0"
   },
   "dependencies": {
-    "dexie": "^3.2.2"
+    "dexie": "^3.2.2",
+    "dexie-export-import": "^1.0.3"
   }
 }
