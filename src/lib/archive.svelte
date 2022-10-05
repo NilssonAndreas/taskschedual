@@ -2,7 +2,7 @@
 <script>
   import { liveQuery } from "dexie";
   import { db } from "../db";
-  import { dateDiffInDays } from "./HelperFunc/time";
+  import { deleteTask } from "./HelperFunc/databseQuerys";
   import {
     TableBody,
     TableBodyCell,
@@ -14,27 +14,17 @@
   } from "flowbite-svelte";
   export let currentTask = {};
   let searchTerm = "";
-  let currentDiff;
-  $: tasks = liveQuery(() =>
+
+  $: completedTasks = liveQuery(() =>
     db.tasks
       .where("description")
       .startsWithIgnoreCase(searchTerm)
-      .and((item) => item.status !== "Completed")
+      .and((item) => item.status == "Completed")
       .sortBy("deadline")
   );
 
   export let hiddenTask = true;
-  // Get information about single task
-  async function handleTaskById(task) {
-    try {
-      
-      currentTask = task;
-      currentDiff = dateDiffInDays(task.startingtime, task.deadline);
-      hiddenTask = false;
-    } catch (error) {
-      console.log("Error while handeling task", task.id);
-    }
-  }
+
 </script>
 
 <!-- Loop entries from database into table -->
@@ -47,25 +37,25 @@
   <TableHead>
     <TableHeadCell>Description</TableHeadCell>
     <TableHeadCell>category</TableHeadCell>
-    <TableHeadCell>Deadline</TableHeadCell>
+    <TableHeadCell>Estimated time</TableHeadCell>
+    <TableHeadCell>Actual time</TableHeadCell>
     <TableHeadCell>Status</TableHeadCell>
     <TableHeadCell></TableHeadCell>
   </TableHead>
 
   <TableBody class="divide-y">
-    {#each $tasks || [] as task (task.id)}
+    {#each $completedTasks || [] as task (task.id)}
       <TableBodyRow trClass="">
         <TableBodyCell>{task.description}</TableBodyCell>
         <TableBodyCell>{task.category}</TableBodyCell>
-        <TableBodyCell>{task.deadline}</TableBodyCell>
+        <TableBodyCell>{task.estimatedduration}</TableBodyCell>
+        <TableBodyCell>{task.actualduration}</TableBodyCell>
         <TableBodyCell>{task.status}</TableBodyCell>
         <TableBodyCell
           ><Button
             size="xs"
-            outline
-            gradient
-            color="purpleToPink"
-            on:click={() => handleTaskById(task)}>Info</Button
+            color="red"
+            on:click={() => deleteTask(task.id)}>Delete</Button
           ></TableBodyCell
         >
       </TableBodyRow>

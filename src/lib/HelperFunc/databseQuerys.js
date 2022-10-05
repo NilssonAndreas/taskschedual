@@ -1,5 +1,5 @@
 import { db } from "../../db";
-import {importInto, exportDB} from "dexie-export-import";
+import { exportDB } from "dexie-export-import";
 /**
    * Add task into databse
    * @async
@@ -38,7 +38,7 @@ export async function updateTask(task) {
             elapsedtime: task.elapsedTime,
         })
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
@@ -52,7 +52,7 @@ export async function completeTask(id, duration) {
     try {
         await db.tasks.update(id, { status: "Completed", actualduration: duration })
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
@@ -64,7 +64,7 @@ export async function deleteTask(id) {
     try {
         await db.tasks.delete(id)
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
@@ -74,11 +74,11 @@ export async function deleteTask(id) {
  * @param  {number} id
  * @param  {number} duration
  */
- export async function updateProgress(id, duration) {
+export async function updateProgress(id, duration) {
     try {
         await db.tasks.update(id, { elapsedtime: duration })
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
@@ -87,23 +87,25 @@ export async function deleteTask(id) {
  * @async
  * @param  {Blob} importFile
  */
-export async function importTasks(importFile){
-    await db.import(importFile[0], {overwriteValues:true});
+export async function importTasks(importFile) {
+    try {
+        await db.import(importFile[0], { overwriteValues: true });
+    } catch (error) {
+        alert("Error, non valid file")
+    }
+
 }
-
-
 
 /**
  * function for exporting database as json blob
  * @async
  */
-export async function exportTasks(){
-    const blob = await exportDB(db, {prettyJson:true});
+export async function exportTasks() {
+    const blob = await exportDB(db, { prettyJson: true });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.download = 'tasks.json';
     link.href = url;
     link.click();
-    URL.revokeObjectURL(url); // Object URLs should be revoked after use
+    URL.revokeObjectURL(url); 
 }
-

@@ -2,6 +2,7 @@
 <script>
   import TaskAdder from "./lib/taskAdder.svelte";
   import TaskList from "./lib/taskList.svelte";
+  import Archive from "./lib/archive.svelte";
   import TimelineCalendar from "./lib/timelineCalendar.svelte";
   import SpecificTaskCard from "./lib/specificTaskCard.svelte";
   import UpdateTask from "./lib/updateTask.svelte";
@@ -25,6 +26,7 @@
   let exportModal = false;
   let importModal = false;
   let files;
+  let showArchive = false;
 </script>
 
 <!-- Container for top buttons -->
@@ -33,9 +35,20 @@
     Add task</Button
   >
   <Button outline color="dark">schedule</Button>
-  <Button outline color="dark">Archive</Button>
-  <Button outline color="dark" on:click={() => importModal = true}>Import tasks</Button>
-  <Button outline color="dark" on:click={() => exportModal = true}
+  {#if showArchive}
+    <Button outline color="dark" on:click={() => (showArchive = false)}
+    >Tasks</Button
+  >
+  {:else}
+    <Button outline color="dark" on:click={() => (showArchive = true)}
+      >Archive</Button
+    >
+  {/if}
+
+  <Button outline color="dark" on:click={() => (importModal = true)}
+    >Import tasks</Button
+  >
+  <Button outline color="dark" on:click={() => (exportModal = true)}
     >Export tasks</Button
   >
 </div>
@@ -53,7 +66,11 @@
 
 <!-- Main div containing Task List -->
 <div class="bg-gray-200">
-  <TaskList bind:hiddenTask={hideSpecificTaskCard} bind:currentTask={task} />
+  {#if showArchive}
+    <Archive />
+  {:else}
+    <TaskList bind:hiddenTask={hideSpecificTaskCard} bind:currentTask={task} />
+  {/if}
 
   <!-- <TimelineCalendar/> -->
 </div>
@@ -109,11 +126,12 @@
   placement="top-center"
 >
   <h5>Chose file to import from.</h5>
-  <input bind:files type="file" >
+  <input bind:files type="file" />
   <div>
     <Button
       color="green"
-      on:click={() => (importTasks(files), (importModal = false))}>Confirm</Button
+      on:click={() => (importTasks(files), (importModal = false))}
+      >Confirm</Button
     >
     <Button color="red" on:click={() => (importModal = false)}>Abort</Button>
   </div>
