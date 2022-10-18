@@ -3,6 +3,7 @@
   import TaskAdder from "./lib/taskAdder.svelte";
   import TaskList from "./lib/taskList.svelte";
   import Archive from "./lib/archive.svelte";
+  import CategoryForm from "./lib/categoryForm.svelte";
   import TimelineCalendar from "./lib/timelineCalendar.svelte";
   import SpecificTaskCard from "./lib/specificTaskCard.svelte";
   import UpdateTask from "./lib/updateTask.svelte";
@@ -10,6 +11,7 @@
   import { sineIn } from "svelte/easing";
   import { exportTasks, importTasks } from "./lib/HelperFunc/databseQuerys";
   let hideTaskForm = true;
+  let hideCategoriesForm = true;
   let hideSpecificTaskCard = true;
   let hideUpdateForm = true;
   let task;
@@ -17,6 +19,11 @@
     x: -320,
     duration: 200,
     easing: sineIn,
+  };
+  let transitionParamsRight = {
+    x: 320,
+    duration: 200,
+    easing: sineIn
   };
   let transitionParamsTop = {
     y: -320,
@@ -27,6 +34,7 @@
   let importModal = false;
   let files;
   let showArchive = false;
+  let archiveDiableButtons = false;
 </script>
 
 <!-- Container for top buttons -->
@@ -34,22 +42,25 @@
   <Button outline color="dark" on:click={() => (hideTaskForm = false)}>
     Add task</Button
   >
+  <Button outline color="dark" on:click={() => (hideCategoriesForm = false)}>
+    Categories</Button
+  >
   <Button outline color="dark">schedule</Button>
   {#if showArchive}
-    <Button outline color="dark" on:click={() => (showArchive = false)}
-    >Tasks</Button
-  >
+    <Button outline color="dark" on:click={() => (showArchive = false, archiveDiableButtons = false)}
+      >Tasks</Button
+    >
   {:else}
-    <Button outline color="dark" on:click={() => (showArchive = true)}
+    <Button outline color="dark" on:click={() => (showArchive = true, archiveDiableButtons = true)}
       >Archive</Button
     >
   {/if}
 
   <Button outline color="dark" on:click={() => (importModal = true)}
-    >Import tasks</Button
+    >Import database</Button
   >
   <Button outline color="dark" on:click={() => (exportModal = true)}
-    >Export tasks</Button
+    >Export database</Button
   >
 </div>
 
@@ -63,11 +74,25 @@
 >
   <TaskAdder />
 </Drawer>
+<!-- Drawer for CategoryForm -->
+<Drawer
+  class="bg-blue-300"
+  placement="right"
+  transitionType="fly"
+  {transitionParamsRight}
+  bind:hidden={hideCategoriesForm}
+  id="categoryForm"
+>
+<CategoryForm />
+</Drawer>
 
 <!-- Main div containing Task List -->
 <div class="bg-gray-200">
   {#if showArchive}
-    <Archive />
+    <Archive
+      bind:hiddenTask={hideSpecificTaskCard}
+      bind:currentTask={task}
+    />
   {:else}
     <TaskList bind:hiddenTask={hideSpecificTaskCard} bind:currentTask={task} />
   {/if}
@@ -88,6 +113,7 @@
     {task}
     bind:uppdateTaskForm={hideUpdateForm}
     bind:hideSpecificTaskCard
+    bind:disableButtons={archiveDiableButtons}
   />
 </Drawer>
 

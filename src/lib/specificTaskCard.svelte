@@ -1,5 +1,9 @@
 <script>
-  import { completeTask, deleteTask, updateProgress } from "./HelperFunc/databseQuerys";
+  import {
+    completeTask,
+    deleteTask,
+    updateProgress,
+  } from "./HelperFunc/databseQuerys";
   import {
     Table,
     TableBody,
@@ -24,7 +28,7 @@
   let progressInHours = 0;
   let validationErrorOnComplete = false;
   let validationErrorOnProgress = false;
-
+  export let disableButtons;
   async function completeTaskIfConfirmed(id) {
     if (actualDurationModal > 0) {
       validationErrorOnComplete = false;
@@ -38,10 +42,10 @@
   async function addProgress() {
     if (progressInHours > 0) {
       validationErrorOnProgress = false;
-      let duration = +task.elapsedtime + +progressInHours
-      updateProgress(task.id, duration)
+      let duration = +task.elapsedtime + +progressInHours;
+      updateProgress(task.id, duration);
       hideSpecificTaskCard = true;
-      task.elapsedTime = duration
+      task.elapsedTime = duration;
     } else {
       validationErrorOnProgress = true;
     }
@@ -77,25 +81,28 @@
   </Card>
 </div>
 
-<!-- Button for edeting task -->
-<Button
-  color="yellow"
-  on:click={() => ((hideSpecificTaskCard = true), (uppdateTaskForm = false))}
->
-  Edit
-</Button>
+{#if disableButtons}
+  <!-- Dont show when in archive -->
+{:else}
+  <!-- Button for edeting task -->
+  <Button
+    color="yellow"
+    on:click={() => ((hideSpecificTaskCard = true), (uppdateTaskForm = false))}
+  >
+    Edit
+  </Button>
 
-<!-- Button for Complete -->
-<Button color="green" on:click={() => (formModal = true)}>Complete</Button>
+  <!-- Button for Complete -->
+  <Button color="green" on:click={() => (formModal = true)}>Complete</Button>
 
-<!-- Button for Delete -->
-<Button color="red" on:click={() => (deleteModal = true)}>Delete</Button>
+  <!-- Button for Delete -->
+  <Button color="red" on:click={() => (deleteModal = true)}>Delete</Button>
 
-<!-- Button for Adding progress -->
-<Button color="blue" on:click={() => (progressModal = true)}
-  >Add progress</Button
->
-
+  <!-- Button for Adding progress -->
+  <Button color="blue" on:click={() => (progressModal = true)}
+    >Add progress</Button
+  >
+{/if}
 <!-- Popup for confirming complete task -->
 <Modal
   bind:open={formModal}
@@ -151,14 +158,17 @@
   <h5>Are you sure you want to delete this task?</h5>
   <div>
     <Button
-      color="green"
+      outline
+      color="dark"
       on:click={() => (
         deleteTask(task.id),
         (deleteModal = false),
         (hideSpecificTaskCard = true)
       )}>Delete</Button
     >
-    <Button color="red" on:click={() => (deleteModal = false)}>Cancel</Button>
+    <Button outline color="dark" on:click={() => (deleteModal = false)}
+      >Cancel</Button
+    >
   </div>
 </Modal>
 
@@ -194,11 +204,7 @@
     />
   {/if}
   <div>
-    <Button
-      color="green"
-      on:click={() => (addProgress())}
-      >Add progress</Button
-    >
+    <Button color="green" on:click={() => addProgress()}>Add progress</Button>
     <Button color="red" on:click={() => (progressModal = false)}>Cancel</Button>
   </div>
 </Modal>

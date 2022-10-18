@@ -2,7 +2,6 @@
 <script>
   import { liveQuery } from "dexie";
   import { db } from "../db";
-  import { dateDiffInDays } from "./HelperFunc/time";
   import {
     TableBody,
     TableBodyCell,
@@ -14,10 +13,14 @@
   } from "flowbite-svelte";
   export let currentTask = {};
   let searchTerm = "";
-  let currentDiff;
+
   $: tasks = liveQuery(() =>
     db.tasks
       .where("description")
+      .startsWithIgnoreCase(searchTerm)
+      .or("category")
+      .startsWithIgnoreCase(searchTerm)
+      .or("deadline")
       .startsWithIgnoreCase(searchTerm)
       .and((item) => item.status !== "Completed")
       .sortBy("deadline")
@@ -27,9 +30,7 @@
   // Get information about single task
   async function handleTaskById(task) {
     try {
-      
       currentTask = task;
-      currentDiff = dateDiffInDays(task.startingtime, task.deadline);
       hiddenTask = false;
     } catch (error) {
       console.log("Error while handeling task", task.id);
@@ -49,7 +50,7 @@
     <TableHeadCell>category</TableHeadCell>
     <TableHeadCell>Deadline</TableHeadCell>
     <TableHeadCell>Status</TableHeadCell>
-    <TableHeadCell></TableHeadCell>
+    <TableHeadCell />
   </TableHead>
 
   <TableBody class="divide-y">

@@ -3,11 +3,9 @@
   import { formatDate } from "./HelperFunc/time";
   import { Label, Input, Select, Button, Helper } from "flowbite-svelte";
   import { validateTask } from "./HelperFunc/validation";
-  import { addTask } from "./HelperFunc/databseQuerys";
-
+  import { addTask, getCategories } from "./HelperFunc/databseQuerys";
   // Sets MinTime in form to todays date.
   let minTime = formatDate(new Date());
-
   let taskInformation = {
     description: null,
     startTime: minTime,
@@ -18,14 +16,7 @@
     elapsedTime: 0,
   };
 
-  // CURRENT CATEGORYS ( SHOULD LATER BE ADDED AS TABLE IN DB )
-  let category = [
-    { value: "Work", name: "Work" },
-    { value: "School", name: "School" },
-    { value: "Home", name: "Home" },
-    { value: "Kids", name: "Kids" },
-    { value: "Sport", name: "Sport" },
-  ];
+  let promise = getCategories();
 
   // Keeps track of invalid values in form
   let validationErrors = {};
@@ -70,22 +61,28 @@
   </div>
 
   <!-- Category -->
+
   <div class="mb-6">
-    <Label
-      >Select category
-      <Select
-        class="mt-2"
-        items={category}
-        bind:value={taskInformation.selected}
-      />
-    </Label>
+    {#await promise}
+      <p>waiting for categories....</p>
+    {:then value}
+      <Label
+        >Select category
+        <Select
+          class="mt-2"
+          items={value}
+          bind:value={taskInformation.selected}
+        />
+      </Label>
+    {:catch error}
+      <p style="color: red">{error.message}</p>
+    {/await}
     {#if validationErrors["selected"]}
       <Helper class="mt-1" color="red"
         ><span class="font-bold text-sm">Error!</span> Choose category</Helper
       >
     {/if}
   </div>
-
   <!-- Starting Time -->
   <div class="mt-6">
     <Label
@@ -141,7 +138,7 @@
   </div>
 
   <!-- Button for submit -->
-  <div class="mt-6 col-span-2 ">
+  <div class="mt-2 col-span-2">
     <Button gradient color="purple" size="xl" on:click={() => validateMyTask()}
       >Add task
     </Button>

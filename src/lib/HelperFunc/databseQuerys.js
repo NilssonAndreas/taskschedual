@@ -109,3 +109,55 @@ export async function exportTasks() {
     link.click();
     URL.revokeObjectURL(url); 
 }
+
+/**
+ * function for adding categories
+ * @async
+ * @param  {string} categoryname
+ */
+export async function addCategory(categoryname) {
+    try {
+        const id = await db.categories.add({
+            name: categoryname
+        });
+
+    } catch (error) {
+        console.log("Error while adding category");
+    }
+}
+
+/**
+ * function for deleting categories
+ * @async
+ * @param  {string} name
+ */
+ export async function deleteCategory(name) {
+    try {
+        await db.categories.where("name").equals(name).delete()
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+ /**
+* function for getting categories from db.
+* @async
+* @return  { array } category
+*/
+export async function getCategories() {
+ let category = [
+   { value: "Work", name: "Work" },
+   { value: "School", name: "School" },
+   { value: "Home", name: "Home" },
+ ];
+ await db.categories
+   .where("name")
+   .startsWithIgnoreCase("")
+   .toArray(function (categories) {
+     categories.forEach((element) => {
+       const newItem = { value: element.name, name: element.name };
+       category.push(newItem);
+     });
+   });
+ return category;
+}
