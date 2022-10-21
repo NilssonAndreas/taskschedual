@@ -1,114 +1,64 @@
-<!-- Timeline-Calendar -->
 <script>
 
+    import Scheduler from "./scheduler.svelte";
+  
 </script>
 
-<div class="bg-emerald-600 text-center m-0">
-    <ul class="m-0">
-      <li>YEAR</li>
-    </ul>
+<div class="gantt">
+  <!-- (A) FIRST ROW : DAYS -->
+  <div class="head">Mon</div>
+  <div class="head">Tue</div>
+  <div class="head">Wed</div>
+  <div class="head">Thur</div>
+  <div class="head">Fri</div>
+  <div class="head">Sat</div>
+  <div class="head">Sun</div>
+
+  <!-- (B) FOLLOWING : TASKS -->
+  
+  <div style="background: #ffdddd; grid-row: 2; grid-column: 1 / span 2">
+    Ett
   </div>
-  
-  <ul class="month">
-    <li>January</li>
-    <li>February</li>
-    <li>March</li>
-    <li>April</li>
-    <li>May</li>
-    <li>June</li>
-    <li>July</li>
-    <li>May</li>
-  
-   
-  </ul>
-  
-  <ul class="days">
-    <li>1</li>
-    <li>2</li>
-    <li>3</li>
-    <li>4</li>
-    <li>5</li>
-    <li>6</li>
-    <li>7</li>
-    <li>8</li>
-    <li>9</li>
-    <li><span class="active">10</span></li>
-    <li>11</li>
-    ...etc
-  </ul> 
+  <div style="background: #d6ffd8; grid-row: 3; grid-column: 3 / span 3">
+    Två
+  </div>
+  <div style="background: #e2e5ff; grid-row: 4; grid-column: 5 / span 3">
+    Tre
+  </div>
 
-  <style>
-    ul {list-style-type: none;}
-body {font-family: Verdana, sans-serif;}
+  <div style="background: #e2e5ff; grid-row: 5; grid-column: 1 / span 3">
+      test
+  </div>
+</div>
 
-/* Month header */
-.month {
-  padding: 70px 25px;
-  width: 100%;
-  background: #1abc9c;
-  text-align: center;
-}
+<div>
+    <Scheduler />
+</div>
+<style>
+  .gantt {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
 
-/* Month list */
-.month ul {
-  margin: 0;
-  padding: 0;
-}
+    /* (A2) "TIMELINE" */
+    background: repeating-linear-gradient(
+      to right,
+      #f2f2f2,
+      #ddd 2px,
+      #fff 2px,
+      #fff 14.25%
+    );
+  }
+  /* (B) CELLS */
+  /* (B1) SHARED CELLS */
+  .gantt div {
+    padding: 10px;
+  }
 
-.month ul li {
-  color: white;
-  font-size: 20px;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-}
-
-/* Previous button inside month header */
-.month .prev {
-  float: left;
-  padding-top: 10px;
-}
-
-/* Next button */
-.month .next {
-  float: right;
-  padding-top: 10px;
-}
-
-/* Weekdays (Mon-Sun) */
-.weekdays {
-  margin: 0;
-  padding: 10px 0;
-  background-color:#ddd;
-}
-
-.weekdays li {
-  display: inline-block;
-  width: 13.6%;
-  color: #666;
-  text-align: center;
-}
-
-/* Days (1-31) */
-.days {
-  padding: 10px 0;
-  background: #eee;
-  margin: 0;
-}
-
-.days li {
-  list-style-type: none;
-  display: inline-block;
-  width: 13.6%;
-  text-align: center;
-  margin-bottom: 5px;
-  font-size:12px;
-  color: #777;
-}
-
-/* Highlight the "current" day */
-.days li .active {
-  padding: 5px;
-  background: #1abc9c;
-  color: white !important
-}
-  </style>
+  /* (B2) HEADER CELLS */
+  .gantt .head {
+    text-align: center;
+    font-weight: 700;
+    color: #fff;
+    background: #103a99;
+  }
+</style>

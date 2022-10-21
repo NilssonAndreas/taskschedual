@@ -40,7 +40,7 @@
 
 <!-- Loop entries from database into table -->
 <TableSearch
-  placeholder="Search by description"
+  placeholder="Search tasks"
   color="purple"
   hoverable={true}
   bind:inputValue={searchTerm}

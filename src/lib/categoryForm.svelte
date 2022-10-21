@@ -10,18 +10,57 @@
   let deleteCategoryName = "";
   let invalidAdd = false;
   let invalidDelete = false;
+  let categoryExists = false;
+  let categoryExistsError = false;
   let promise = getCategories();
 
-  function validateAdd(stringToValidate) {
+  /**
+   * updated actual time for tasks
+   * @async
+   * @param  {string} stringToValidate
+   */
+  async function validateAdd(stringToValidate) {
     if (stringToValidate == "" || stringToValidate == null) {
       invalidAdd = true;
+      categoryExistsError = false;
     } else {
-      addCategory(stringToValidate);
-      invalidAdd = false;
-      addCategoryName = "";
-      promise = getCategories();
+      await promise.then((value) =>
+        checkIfCategoryExists(value, stringToValidate)
+      );
+
+      if (categoryExists) {
+        invalidAdd = false;
+        categoryExistsError = true;
+        categoryExists = false;
+        return;
+      } else {
+        addCategory(stringToValidate);
+        invalidAdd = false;
+        categoryExists = false;
+        categoryExistsError = false;
+        addCategoryName = "";
+        promise = getCategories();
+      }
     }
   }
+
+  /**
+   * Checks if category is in databse
+   * @param  {string} stringToValidate
+   * @param  {array} categoryArray
+   */
+  function checkIfCategoryExists(categoryArray, nameString) {
+    for (const item of categoryArray) {
+      if (item.value.includes(nameString)) {
+        categoryExists = true;
+      }
+    }
+  }
+
+  /**
+   * Validates delte input
+   * @param  {string} stringToValidate
+   */
   function validateDelete(stringToValidate) {
     if (stringToValidate == "" || stringToValidate == null) {
       invalidDelete = true;
@@ -42,6 +81,12 @@
         ><span class="font-bold text-sm">Error!</span> Enter a name</Helper
       >
     {/if}
+    {#if categoryExistsError}
+      <Helper class="mt-1" color="red"
+        ><span class="font-bold text-sm">Error!</span> Category already exist</Helper
+      >
+    {/if}
+
     <Label for="add" class="block mb-2">Add category</Label>
     <Input
       id="add"
@@ -68,10 +113,13 @@
       >
     {/if}
     {#await promise}
-      <p>waiting for categories....</p>
+      <Label
+        >Delete category
+        <Select class="mt-2" value="" />
+      </Label>
     {:then value}
       <Label
-        >Select category
+        >Delete category
         <Select class="mt-2" items={value} bind:value={deleteCategoryName} />
       </Label>
     {:catch error}

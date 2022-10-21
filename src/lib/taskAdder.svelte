@@ -1,11 +1,18 @@
 <!-- Adds task into db -->
 <script>
-  import { formatDate } from "./HelperFunc/time";
+  
   import { Label, Input, Select, Button, Helper } from "flowbite-svelte";
   import { validateTask } from "./HelperFunc/validation";
   import { addTask, getCategories } from "./HelperFunc/databseQuerys";
+  import {
+    checkIfWithinDeadline,
+    calculateDaysAndRest,
+    addDays,
+    formatDate
+  } from "./HelperFunc/time";
   // Sets MinTime in form to todays date.
   let minTime = formatDate(new Date());
+  export let userCapacity = 8;
   let taskInformation = {
     description: null,
     startTime: minTime,
@@ -29,6 +36,32 @@
     let validated = Object.values(validationErrors).every(
       (value) => value === false
     );
+
+    let startTime = new Date(taskInformation.startTime);
+    let timePeriod = calculateDaysAndRest(
+      taskInformation.estimatedDuration,
+      userCapacity
+    );
+    console.log(timePeriod)
+    let days = timePeriod.days;
+    if (timePeriod.rest > 0) {
+      days += 1;
+    }
+    let completedAt;
+    if (days <= 1) {
+      completedAt = startTime;
+    } else {
+      completedAt = addDays(days - 1, formatDate(startTime));
+    }
+    console.log(completedAt)
+    console.log(formatDate(startTime))
+    
+    let durationValidation = checkIfWithinDeadline(
+      completedAt,
+      taskInformation.deadline
+    );
+
+    
     if (validated) {
       addTask(taskInformation);
       taskInformation = {
@@ -40,6 +73,9 @@
         taskStatus: "Not started",
         elapsedTime: 0,
       };
+      if ( durationValidation == false) {
+      alert("Task added. Task will not be completed in time with your current work hours")
+    }
     }
   }
 </script>

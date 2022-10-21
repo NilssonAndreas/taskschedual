@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@event-calendar/time-grid": "^0.13.1",
     "@popperjs/core": "^2.11.6",
     "@sveltejs/vite-plugin-svelte": "^1.0.2",
     "autoprefixer": "^10.4.7",

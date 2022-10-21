@@ -57,6 +57,19 @@ export async function completeTask(id, duration) {
 }
 
 /**
+ * Sets status to Started for specific task
+ * @async
+ * @param  {number} id
+ */
+ export async function startTask(id) {
+    try {
+        await db.tasks.update(id, { status: "Started"})
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+/**
  * @async
  * @param  {number} id
  */

@@ -11,6 +11,7 @@ export function validateTask(taskInformation) {
         selected: false,
         elapsedTime: false,
     };
+    
 
     if (taskInformation.description == null || taskInformation.description == "") {
         validationErrors.description = true

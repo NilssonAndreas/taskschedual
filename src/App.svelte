@@ -4,26 +4,24 @@
   import TaskList from "./lib/taskList.svelte";
   import Archive from "./lib/archive.svelte";
   import CategoryForm from "./lib/categoryForm.svelte";
-  import TimelineCalendar from "./lib/timelineCalendar.svelte";
+  import Gantt from "./lib/gantt.svelte";
   import SpecificTaskCard from "./lib/specificTaskCard.svelte";
   import UpdateTask from "./lib/updateTask.svelte";
-  import { Drawer, Button, Modal } from "flowbite-svelte";
+  import { Drawer, Button, Modal, Input, Label } from "flowbite-svelte";
   import { sineIn } from "svelte/easing";
   import { exportTasks, importTasks } from "./lib/HelperFunc/databseQuerys";
+
+  let userCapacity = 8;
   let hideTaskForm = true;
   let hideCategoriesForm = true;
   let hideSpecificTaskCard = true;
   let hideUpdateForm = true;
+  let showCalendar = false;
   let task;
   let transitionParams = {
     x: -320,
     duration: 200,
     easing: sineIn,
-  };
-  let transitionParamsRight = {
-    x: 320,
-    duration: 200,
-    easing: sineIn
   };
   let transitionParamsTop = {
     y: -320,
@@ -45,14 +43,28 @@
   <Button outline color="dark" on:click={() => (hideCategoriesForm = false)}>
     Categories</Button
   >
-  <Button outline color="dark">schedule</Button>
+  <Button outline color="dark" on:click={() => (showCalendar = !showCalendar)}
+    >Schedule</Button
+  >
   {#if showArchive}
-    <Button outline color="dark" on:click={() => (showArchive = false, archiveDiableButtons = false)}
-      >Tasks</Button
+    <Button
+      outline
+      color="dark"
+      on:click={() => (
+        (showArchive = false),
+        (archiveDiableButtons = false),
+        (showCalendar = false)
+      )}>Tasks</Button
     >
   {:else}
-    <Button outline color="dark" on:click={() => (showArchive = true, archiveDiableButtons = true)}
-      >Archive</Button
+    <Button
+      outline
+      color="dark"
+      on:click={() => (
+        (showArchive = true),
+        (archiveDiableButtons = true),
+        (showCalendar = false)
+      )}>Archive</Button
     >
   {/if}
 
@@ -72,32 +84,45 @@
   bind:hidden={hideTaskForm}
   id="taskForm"
 >
-  <TaskAdder />
+  <TaskAdder bind:userCapacity />
 </Drawer>
 <!-- Drawer for CategoryForm -->
 <Drawer
   class="bg-blue-300"
-  placement="right"
   transitionType="fly"
-  {transitionParamsRight}
+  {transitionParams}
   bind:hidden={hideCategoriesForm}
   id="categoryForm"
 >
-<CategoryForm />
+  <CategoryForm />
 </Drawer>
 
 <!-- Main div containing Task List -->
 <div class="bg-gray-200">
-  {#if showArchive}
-    <Archive
-      bind:hiddenTask={hideSpecificTaskCard}
-      bind:currentTask={task}
-    />
+  {#if showCalendar}
+    <div class="flex flex-row">
+      <div>
+      <Label for="capacity">Work hours / day</Label>
+      <Input
+        id="to-select-capacity"
+        type="number"
+        size="sm"
+        placeholder="Enter capacity"
+        bind:value={userCapacity}
+      />
+    </div>
+    </div>
+    {#key userCapacity}
+    <Gantt bind:capacity={userCapacity}/>
+    {/key}
+   
+  {:else if showArchive}
+    <Archive bind:hiddenTask={hideSpecificTaskCard} bind:currentTask={task} />
   {:else}
     <TaskList bind:hiddenTask={hideSpecificTaskCard} bind:currentTask={task} />
   {/if}
 
-  <!-- <TimelineCalendar/> -->
+  <!--  -->
 </div>
 
 <!-- Drawer for specific Task -->

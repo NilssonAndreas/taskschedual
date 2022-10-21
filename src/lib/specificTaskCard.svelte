@@ -65,16 +65,26 @@
         <TableHeadCell>Start time</TableHeadCell>
         <TableHeadCell>Deadline</TableHeadCell>
         <TableHeadCell>Estimated duraion (Hours)</TableHeadCell>
+        {#if disableButtons}
+        <TableHeadCell>Actual Duration</TableHeadCell>
+        {:else}
         <TableHeadCell>Elapsed time (Hours)</TableHeadCell>
         <TableHeadCell>Status</TableHeadCell>
+        {/if}
+        
       </TableHead>
       <TableBody class="divide-y">
         <TableBodyRow trClass="">
           <TableBodyCell>{task.startingtime}</TableBodyCell>
           <TableBodyCell>{task.deadline}</TableBodyCell>
           <TableBodyCell>{task.estimatedduration}</TableBodyCell>
-          <TableBodyCell>{task.elapsedtime}</TableBodyCell>
-          <TableBodyCell>{task.status}</TableBodyCell>
+          {#if disableButtons}
+            <TableBodyCell>{task.actualduration}</TableBodyCell>
+          {:else}
+            <TableBodyCell>{task.elapsedtime}</TableBodyCell>
+            <TableBodyCell>{task.status}</TableBodyCell>
+          {/if}
+          
         </TableBodyRow>
       </TableBody>
     </Table>
